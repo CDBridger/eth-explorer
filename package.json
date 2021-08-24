@@ -1,5 +1,6 @@
 {
-  "name": "eth-proj",
+  "name": "cdbridger",
+  "homepage": "https://cdbridger.github.io/eth-explorer/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
