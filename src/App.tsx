@@ -26,7 +26,6 @@ const App: React.FC = () => {
         {loading ? <p>Loading...</p> :
           <>
             <ConversionComponent amount={gasState?.average} amountWait={gasState?.avgWait} conversion={conversionState!.ethereum.usd} lookupTable={gasState!.gasPriceRange} />
-            <button onClick={retrieveData}>Refresh</button>
           </>}
       </header>
     </div>
