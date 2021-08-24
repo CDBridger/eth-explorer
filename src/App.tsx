@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import { GasTable, GeckoConversionTable, getConversion, getGas } from './api-request';
 import { ConversionComponent } from './ConversionComponent';
+import { Helmet } from 'react-helmet';
 
 const App: React.FC = () => {
 
@@ -16,12 +17,16 @@ const App: React.FC = () => {
   }
 
   useEffect(() => {
-    document.title = 'Eth Explorer';
     retrieveData();
   }, [])
 
   return (
     <div className="App">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Eth Explorer</title>
+        <meta name="description" content="Eth Explorer App" />
+      </Helmet>
       <header className="App-header">
         {loading ? <p>Loading...</p> :
           <>
