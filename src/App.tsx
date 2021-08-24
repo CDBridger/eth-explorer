@@ -1,43 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { GasTable, getConversion, getGas } from './api-request';
-
-const GWEI_TO_ETH = 1 / 1000000000;
+import { ConversionTable, GasTable, getConversion, getGas } from './api-request';
+import { ConversionComponent } from './ConversionComponent';
 
 const App: React.FC = () => {
 
-  const [state, setState] = useState<GasTable | null>(null);
+  const [gasState, setGasState] = useState<GasTable | null>(null);
+  const [conversionState, setConversionState] = useState<ConversionTable | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const retrievePrices = () => {
-    console.log('Retrieving prices')
-    getGas().then(setState)
+  const retrieveData = async () => {
+    console.log('Retrieving data')
+    await Promise.all([getGas().then(setGasState), getConversion().then(setConversionState).catch(() => {
+      console.log('Failed to retrieve data, setting bogus values')
+      setConversionState({
+        data: {
+          symbol: 'ETH',
+          name: 'Ethereum',
+          last_updated: 'na',
+          amount: 1,
+          quote: {
+            'USD': {
+              price: 0,
+              last_updated: 'na'
+            }
+          }
+        },
+        status: {
+          error_code: '500'
+        }
+      })
+    })]);
+    setLoading(false);
   }
 
   useEffect(() => {
-    retrievePrices();
-    getConversion();
+    retrieveData();
   }, [])
 
   return (
     <div className="App">
       <header className="App-header">
-        <p>
-          Safe Low: {(state?.safeLow ?? 0) / 10} Gwei - {(((state?.safeLow ?? 0) / 10) * GWEI_TO_ETH).toFixed(9)} Eth <br />
-          <sub>{(state?.safeLowWait ?? 0) * 60} seconds</sub>
-        </p>
-        <p>
-          Average: {(state?.average ?? 0) / 10} Gwei - {(((state?.average ?? 0) / 10) * GWEI_TO_ETH).toFixed(9)} Eth  <br />
-          <sub>{(state?.avgWait ?? 0) * 60} seconds</sub>
-        </p>
-        <p>
-          Fast: {(state?.fast ?? 0) / 10} Gwei - {(((state?.fast ?? 0) / 10) * GWEI_TO_ETH).toFixed(9)} Eth  <br />
-          <sub>{(state?.fastWait ?? 0) * 60} seconds</sub>
-        </p>
-        <p>
-          Fastest: {(state?.fastest ?? 0) / 10} Gwei - {(((state?.fastest ?? 0) / 10) * GWEI_TO_ETH).toFixed(9)} Eth  <br />
-          <sub>{(state?.fastestWait ?? 0) * 60} seconds</sub>
-        </p>
-        <button onClick={retrievePrices}>Refresh</button>
+        {loading ? <p>Loading...</p> : <><ConversionComponent amount={gasState?.safeLow} amountWait={gasState?.safeLowWait} conversion={conversionState?.data.quote['USD'].price} />
+          <ConversionComponent amount={gasState?.average} amountWait={gasState?.avgWait} conversion={conversionState?.data.quote['USD']?.price} />
+          <ConversionComponent amount={gasState?.fast} amountWait={gasState?.fastWait} conversion={conversionState?.data.quote['USD']?.price} />
+          <ConversionComponent amount={gasState?.fastest} amountWait={gasState?.fastest} conversion={conversionState?.data.quote['USD']?.price} />
+          <button onClick={retrieveData}>Refresh</button></>}
       </header>
     </div>
   );
