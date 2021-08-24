@@ -26,14 +26,14 @@ export const ConversionComponent: React.FC<Props> = (props: Props) => {
     const onGweiChange = (e: React.FormEvent<HTMLInputElement>) => {
         setGweiState(e.currentTarget.value);
         setEthState((Number(e.currentTarget.value) * GWEI_TO_ETH).toFixed(9))
-        setUsdState(`${Number(e.currentTarget.value) * GWEI_TO_ETH * conversion}`)
+        setUsdState(`${parseFloat((Number(e.currentTarget.value) * GWEI_TO_ETH * conversion).toPrecision(4))}`)
         setWaitState(`${findNearest(Number(e.currentTarget.value) * 10)}`)
     }
 
     const onEthChange = (e: React.FormEvent<HTMLInputElement>) => {
         setGweiState(`${Number(e.currentTarget.value) / GWEI_TO_ETH}`);
         setEthState(e.currentTarget.value)
-        setUsdState(`${Number(e.currentTarget.value) * conversion}`)
+        setUsdState(`${parseFloat((Number(e.currentTarget.value) * conversion).toPrecision(4))}`)
         setWaitState(`${findNearest(Number(e.currentTarget.value) / GWEI_TO_ETH)}`)
     }
 
@@ -46,7 +46,7 @@ export const ConversionComponent: React.FC<Props> = (props: Props) => {
 
     return (
         <p>
-            <input value={gweiState} onChange={onGweiChange} /> Gwei - <input value={ethState} onChange={onEthChange} /> Eth - <input value={usdState} onChange={onUsdChange} /> USD<br />
+            <input value={gweiState} type="number" onChange={onGweiChange} /> Gwei - <input value={ethState} type="number" onChange={onEthChange} /> Eth - <input value={usdState} type="number" onChange={onUsdChange} /> USD<br />
             <sub>~{waitState} seconds</sub>
         </p>
     )
