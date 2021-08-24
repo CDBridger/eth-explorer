@@ -44,10 +44,10 @@ export const getConversion = async (): Promise<ConversionTable> => {
             symbol: 'ETH',
             convert: 'USD'
         },
-        headers: {
-            'Access-Control-Allow-Headers': ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
-            "Access-Control-Allow-Origin": "*"
-        }
+        // headers: {
+        //     'Access-Control-Allow-Headers': ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+        //     "Access-Control-Allow-Origin": "*"
+        // }
     })
     console.log(res);
     return res.data
