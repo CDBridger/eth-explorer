@@ -16,6 +16,7 @@ const App: React.FC = () => {
   }
 
   useEffect(() => {
+    document.title = 'Eth Explorer';
     retrieveData();
   }, [])
 
